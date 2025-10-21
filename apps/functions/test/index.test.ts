@@ -35,5 +35,14 @@ describe('404 handler', () => {
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('error', 'Not Found');
+    expect(response.body).toHaveProperty('message', 'The requested endpoint does not exist');
+  });
+});
+
+describe('CORS', () => {
+  it('should have CORS headers', async () => {
+    const response = await request(app).get('/api/health').set('Origin', 'http://localhost:4200');
+
+    expect(response.headers['access-control-allow-origin']).toBeDefined();
   });
 });
