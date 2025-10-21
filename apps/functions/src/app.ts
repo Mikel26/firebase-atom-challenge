@@ -7,6 +7,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import * as usersController from './api/users.controller';
+import * as tasksController from './api/tasks.controller';
+import { authMiddleware } from './middleware/auth';
 
 // Inicializar app
 const app = express();
@@ -42,6 +44,15 @@ app.get('/api/health', (_req: Request, res: Response) => {
 // Users routes (public - no auth required)
 app.post('/api/users/login', usersController.login);
 app.post('/api/users', usersController.createUser);
+
+// Auth middleware - todas las rutas después requieren autenticación
+app.use(authMiddleware);
+
+// Tasks routes (protected - auth required)
+app.get('/api/tasks', tasksController.list);
+app.post('/api/tasks', tasksController.create);
+app.patch('/api/tasks/:id', tasksController.update);
+app.delete('/api/tasks/:id', tasksController.remove);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
