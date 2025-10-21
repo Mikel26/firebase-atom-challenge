@@ -14,6 +14,7 @@
     "setup": "pnpm i && pnpm -C apps/functions i && pnpm -C apps/web i",
     "build": "pnpm -C apps/web build && pnpm -C apps/functions build",
     "test": "pnpm -C apps/functions test && pnpm -C apps/web test",
+    "test:health": "node scripts/test-health.js",
     "lint": "pnpm -C apps/functions lint && pnpm -C apps/web lint",
     "lint:fix": "pnpm -C apps/functions lint:fix && pnpm -C apps/web lint:fix",
     "format": "prettier --write \"**/*.{ts,js,json,md,html,css,scss}\"",
@@ -36,4 +37,3 @@
     "packages/*"
   ]
 }
-

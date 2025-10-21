@@ -50,3 +50,5 @@ yarn-error.log*
 # Misc
 *.tsbuildinfo
 
+# Test files (no commitear)
+test-api.http

@@ -1,5 +1,10 @@
-// Entry point para modelos compartidos
-// Se implementará en PR1
+/**
+ * @atom-challenge/shared
+ * Paquete de tipos y modelos compartidos entre frontend y backend
+ */
 
-export {};
+// Domain Models
+export * from './models';
 
+// DTOs y Schemas de validación
+export * from './dto';
