@@ -78,22 +78,22 @@ describe('Tasks Endpoints', () => {
     tasks.clear();
   });
 
-  describe('GET /api/tasks', () => {
+  describe('GET /v1/tasks', () => {
     it('should return 401 without token', async () => {
-      const response = await request(app).get('/api/tasks');
+      const response = await request(app).get('/v1/tasks');
 
       expect(response.status).toBe(401);
       expect(response.body.error).toBe('Unauthorized');
     });
 
     it('should return 401 with invalid token', async () => {
-      const response = await request(app).get('/api/tasks').set('Authorization', 'Bearer invalid');
+      const response = await request(app).get('/v1/tasks').set('Authorization', 'Bearer invalid');
 
       expect(response.status).toBe(401);
     });
 
     it('should return empty array for user with no tasks', async () => {
-      const response = await request(app).get('/api/tasks').set('Authorization', `Bearer ${token}`);
+      const response = await request(app).get('/v1/tasks').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual([]);
@@ -122,7 +122,7 @@ describe('Tasks Endpoints', () => {
       };
       tasks.set('task2', task2);
 
-      const response = await request(app).get('/api/tasks').set('Authorization', `Bearer ${token}`);
+      const response = await request(app).get('/v1/tasks').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveLength(1);
@@ -130,9 +130,9 @@ describe('Tasks Endpoints', () => {
     });
   });
 
-  describe('POST /api/tasks', () => {
+  describe('POST /v1/tasks', () => {
     it('should return 401 without token', async () => {
-      const response = await request(app).post('/api/tasks').send({
+      const response = await request(app).post('/v1/tasks').send({
         title: 'New Task',
       });
 
@@ -141,7 +141,7 @@ describe('Tasks Endpoints', () => {
 
     it('should return 400 for invalid data', async () => {
       const response = await request(app)
-        .post('/api/tasks')
+        .post('/v1/tasks')
         .set('Authorization', `Bearer ${token}`)
         .send({
           title: 'ab', // Muy corto (min 3)
@@ -153,7 +153,7 @@ describe('Tasks Endpoints', () => {
 
     it('should create task successfully', async () => {
       const response = await request(app)
-        .post('/api/tasks')
+        .post('/v1/tasks')
         .set('Authorization', `Bearer ${token}`)
         .send({
           title: 'New Task',
@@ -168,9 +168,9 @@ describe('Tasks Endpoints', () => {
     });
   });
 
-  describe('PATCH /api/tasks/:id', () => {
+  describe('PATCH /v1/tasks/:id', () => {
     it('should return 401 without token', async () => {
-      const response = await request(app).patch('/api/tasks/task1').send({
+      const response = await request(app).patch('/v1/tasks/task1').send({
         completed: true,
       });
 
@@ -179,7 +179,7 @@ describe('Tasks Endpoints', () => {
 
     it('should return 404 for nonexistent task', async () => {
       const response = await request(app)
-        .patch('/api/tasks/nonexistent')
+        .patch('/v1/tasks/nonexistent')
         .set('Authorization', `Bearer ${token}`)
         .send({
           completed: true,
@@ -200,7 +200,7 @@ describe('Tasks Endpoints', () => {
       tasks.set('task1', task);
 
       const response = await request(app)
-        .patch('/api/tasks/task1')
+        .patch('/v1/tasks/task1')
         .set('Authorization', `Bearer ${token}`)
         .send({
           completed: true,
@@ -222,7 +222,7 @@ describe('Tasks Endpoints', () => {
       tasks.set('task1', task);
 
       const response = await request(app)
-        .patch('/api/tasks/task1')
+        .patch('/v1/tasks/task1')
         .set('Authorization', `Bearer ${token}`)
         .send({
           title: 'Updated',
@@ -235,16 +235,16 @@ describe('Tasks Endpoints', () => {
     });
   });
 
-  describe('DELETE /api/tasks/:id', () => {
+  describe('DELETE /v1/tasks/:id', () => {
     it('should return 401 without token', async () => {
-      const response = await request(app).delete('/api/tasks/task1');
+      const response = await request(app).delete('/v1/tasks/task1');
 
       expect(response.status).toBe(401);
     });
 
     it('should return 404 for nonexistent task', async () => {
       const response = await request(app)
-        .delete('/api/tasks/nonexistent')
+        .delete('/v1/tasks/nonexistent')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(404);
@@ -262,7 +262,7 @@ describe('Tasks Endpoints', () => {
       tasks.set('task1', task);
 
       const response = await request(app)
-        .delete('/api/tasks/task1')
+        .delete('/v1/tasks/task1')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
@@ -280,7 +280,7 @@ describe('Tasks Endpoints', () => {
       tasks.set('task1', task);
 
       const response = await request(app)
-        .delete('/api/tasks/task1')
+        .delete('/v1/tasks/task1')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(204);
