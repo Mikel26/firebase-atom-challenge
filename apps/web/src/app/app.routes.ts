@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -6,19 +7,17 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full',
   },
-  // Las rutas de features se añadirán en PRs posteriores
-  // {
-  //   path: 'login',
-  //   loadComponent: () => import('./features/login/login.page').then(m => m.LoginPage)
-  // },
-  // {
-  //   path: 'tasks',
-  //   loadComponent: () => import('./features/tasks/tasks.page').then(m => m.TasksPage),
-  //   canActivate: [authGuard]
-  // },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/login/login.page').then((m) => m.LoginPageComponent),
+  },
+  {
+    path: 'tasks',
+    loadComponent: () => import('./features/tasks/tasks.page').then((m) => m.TasksPageComponent),
+    canActivate: [authGuard],
+  },
   {
     path: '**',
     redirectTo: 'login',
   },
 ];
-
