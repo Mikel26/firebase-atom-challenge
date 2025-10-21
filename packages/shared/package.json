@@ -1,0 +1,16 @@
+{
+  "name": "@atom-challenge/shared",
+  "version": "1.0.0",
+  "description": "Modelos y tipos compartidos entre frontend y backend",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
+
