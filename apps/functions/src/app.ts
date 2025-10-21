@@ -32,7 +32,7 @@ app.use(
 app.use(express.json());
 
 // Health check endpoint
-app.get('/api/health', (_req: Request, res: Response) => {
+app.get('/v1/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     message: 'TODO API is running',
@@ -42,17 +42,17 @@ app.get('/api/health', (_req: Request, res: Response) => {
 });
 
 // Users routes (public - no auth required)
-app.post('/api/users/login', usersController.login);
-app.post('/api/users', usersController.createUser);
+app.post('/v1/users/login', usersController.login);
+app.post('/v1/users', usersController.createUser);
 
 // Auth middleware - todas las rutas después requieren autenticación
-app.use(authMiddleware);
+app.use('/v1', authMiddleware);
 
 // Tasks routes (protected - auth required)
-app.get('/api/tasks', tasksController.list);
-app.post('/api/tasks', tasksController.create);
-app.patch('/api/tasks/:id', tasksController.update);
-app.delete('/api/tasks/:id', tasksController.remove);
+app.get('/v1/tasks', tasksController.list);
+app.post('/v1/tasks', tasksController.create);
+app.patch('/v1/tasks/:id', tasksController.update);
+app.delete('/v1/tasks/:id', tasksController.remove);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {

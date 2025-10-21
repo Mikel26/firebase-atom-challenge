@@ -58,9 +58,9 @@ jest.mock('../src/infra/firestore', () => ({
 }));
 
 describe('Users Endpoints', () => {
-  describe('POST /api/users/login', () => {
+  describe('POST /v1/users/login', () => {
     it('should return 400 for invalid email', async () => {
-      const response = await request(app).post('/api/users/login').send({
+      const response = await request(app).post('/v1/users/login').send({
         email: 'invalid-email',
       });
 
@@ -69,14 +69,14 @@ describe('Users Endpoints', () => {
     });
 
     it('should return 400 for missing email', async () => {
-      const response = await request(app).post('/api/users/login').send({});
+      const response = await request(app).post('/v1/users/login').send({});
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Bad Request');
     });
 
     it('should return 404 for non-existent user', async () => {
-      const response = await request(app).post('/api/users/login').send({
+      const response = await request(app).post('/v1/users/login').send({
         email: 'nonexistent@example.com',
       });
 
@@ -88,10 +88,10 @@ describe('Users Endpoints', () => {
     it('should return 200 with token for existing user', async () => {
       // Crear usuario primero
       const email = `test-${Date.now()}@example.com`;
-      await request(app).post('/api/users').send({ email });
+      await request(app).post('/v1/users').send({ email });
 
       // Hacer login
-      const response = await request(app).post('/api/users/login').send({ email });
+      const response = await request(app).post('/v1/users/login').send({ email });
 
       expect(response.status).toBe(200);
       expect(response.body.token).toBeDefined();
@@ -100,9 +100,9 @@ describe('Users Endpoints', () => {
     });
   });
 
-  describe('POST /api/users', () => {
+  describe('POST /v1/users', () => {
     it('should return 400 for invalid email', async () => {
-      const response = await request(app).post('/api/users').send({
+      const response = await request(app).post('/v1/users').send({
         email: 'not-an-email',
       });
 
@@ -111,7 +111,7 @@ describe('Users Endpoints', () => {
     });
 
     it('should return 400 for missing email', async () => {
-      const response = await request(app).post('/api/users').send({});
+      const response = await request(app).post('/v1/users').send({});
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Bad Request');
@@ -120,7 +120,7 @@ describe('Users Endpoints', () => {
     it('should create user and return 201 with token', async () => {
       const email = `newuser-${Date.now()}@example.com`;
 
-      const response = await request(app).post('/api/users').send({ email });
+      const response = await request(app).post('/v1/users').send({ email });
 
       expect(response.status).toBe(201);
       expect(response.body.token).toBeDefined();
@@ -134,10 +134,10 @@ describe('Users Endpoints', () => {
       const email = `duplicate-${Date.now()}@example.com`;
 
       // Crear usuario
-      await request(app).post('/api/users').send({ email });
+      await request(app).post('/v1/users').send({ email });
 
       // Intentar crear de nuevo
-      const response = await request(app).post('/api/users').send({ email });
+      const response = await request(app).post('/v1/users').send({ email });
 
       expect(response.status).toBe(409);
       expect(response.body.error).toBe('Conflict');
@@ -147,7 +147,7 @@ describe('Users Endpoints', () => {
     it('should return valid JWT token', async () => {
       const email = `jwt-test-${Date.now()}@example.com`;
 
-      const response = await request(app).post('/api/users').send({ email });
+      const response = await request(app).post('/v1/users').send({ email });
 
       expect(response.status).toBe(201);
       expect(response.body.token).toBeDefined();

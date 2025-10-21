@@ -11,9 +11,9 @@ const PORT = 5001;
 
 // URLs posibles para probar (los emulators pueden usar diferentes formatos)
 const POSSIBLE_PATHS = [
-  '/demo-atom-challenge/us-central1/api/api/health',
-  '/api/api/health',
-  '/demo-atom-challenge/us-central1-api/api/health',
+  '/demo-atom-challenge/us-central1/api/v1/health',
+  '/v1/health',
+  '/demo-atom-challenge/us-central1-api/v1/health',
 ];
 
 console.log('🧪 Probando Health Endpoint...\n');
