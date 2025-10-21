@@ -2,7 +2,7 @@
   "name": "functions",
   "version": "1.0.0",
   "description": "Firebase Cloud Functions con Express para TODO API",
-  "main": "lib/index.js",
+  "main": "lib/apps/functions/src/index.js",
   "engines": {
     "node": "20"
   },
@@ -48,4 +48,3 @@
   },
   "private": true
 }
-

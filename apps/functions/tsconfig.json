@@ -22,7 +22,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@atom-challenge/shared": ["../../packages/shared/src/index.ts"]
+      "@atom-challenge/shared": ["../../packages/shared/src"]
     }
   },
   "include": ["src/**/*"],
