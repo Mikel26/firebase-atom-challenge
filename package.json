@@ -13,9 +13,9 @@
   "scripts": {
     "setup": "pnpm i && pnpm -C apps/functions i && pnpm -C apps/web i",
     "build": "pnpm -C apps/web build && pnpm -C apps/functions build",
-    "test": "pnpm -C apps/web test && pnpm -C apps/functions test",
-    "lint": "pnpm -C apps/web lint && pnpm -C apps/functions lint",
-    "lint:fix": "pnpm -C apps/web lint --fix && pnpm -C apps/functions lint --fix",
+    "test": "pnpm -C apps/functions test && pnpm -C apps/web test",
+    "lint": "pnpm -C apps/functions lint && pnpm -C apps/web lint",
+    "lint:fix": "pnpm -C apps/functions lint:fix && pnpm -C apps/web lint:fix",
     "format": "prettier --write \"**/*.{ts,js,json,md,html,css,scss}\"",
     "format:check": "prettier --check \"**/*.{ts,js,json,md,html,css,scss}\"",
     "serve": "concurrently -n WEB,API \"pnpm -C apps/web start\" \"pnpm -C apps/functions serve\"",
