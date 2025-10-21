@@ -2,12 +2,12 @@
   "name": "functions",
   "version": "1.0.0",
   "description": "Firebase Cloud Functions con Express para TODO API",
-  "main": "lib/index.js",
+  "main": "lib/apps/functions/src/index.js",
   "engines": {
     "node": "20"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "build:watch": "tsc --watch",
     "serve": "pnpm run build && firebase emulators:start --only functions",
     "shell": "pnpm run build && firebase functions:shell",
@@ -43,9 +43,9 @@
     "firebase-functions-test": "^3.1.0",
     "jest": "^29.7.0",
     "supertest": "^6.3.4",
+    "tsc-alias": "^1.8.8",
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3"
   },
   "private": true
 }
-

@@ -6,6 +6,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import * as usersController from './api/users.controller';
 
 // Inicializar app
 const app = express();
@@ -37,6 +38,10 @@ app.get('/api/health', (_req: Request, res: Response) => {
     version: '1.0.0',
   });
 });
+
+// Users routes (public - no auth required)
+app.post('/api/users/login', usersController.login);
+app.post('/api/users', usersController.createUser);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
