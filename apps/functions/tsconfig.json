@@ -4,7 +4,6 @@
     "module": "commonjs",
     "lib": ["ES2022"],
     "outDir": "lib",
-    "rootDir": "src",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -20,9 +19,12 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@atom-challenge/shared": ["../../packages/shared/src/index.ts"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "lib", "test/**/*"]
 }
-
