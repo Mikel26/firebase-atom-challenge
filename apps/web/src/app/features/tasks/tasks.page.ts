@@ -20,6 +20,7 @@ import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { TaskItemComponent } from './task-item.component';
 import { TaskEditorDialogComponent } from './task-editor-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-tasks',
@@ -340,10 +341,27 @@ export class TasksPageComponent implements OnInit {
   }
 
   onDeleteTask(task: Task): void {
-    if (!confirm(`¿Eliminar la tarea "${task.title}"?`)) {
-      return;
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Eliminar Tarea',
+        message: `¿Estás seguro de que deseas eliminar la tarea "${task.title}"?`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        confirmColor: 'warn',
+      },
+    });
 
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.deleteTaskConfirmed(task);
+    });
+  }
+
+  private deleteTaskConfirmed(task: Task): void {
     this.apiClient.deleteTask(task.id).subscribe({
       next: () => {
         this.tasks.update((tasks) => tasks.filter((t) => t.id !== task.id));
@@ -358,6 +376,21 @@ export class TasksPageComponent implements OnInit {
   }
 
   onLogout(): void {
-    this.authService.logout();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Cerrar Sesión',
+        message: '¿Estás seguro de que deseas cerrar sesión?',
+        confirmText: 'Cerrar Sesión',
+        cancelText: 'Cancelar',
+        confirmColor: 'primary',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.authService.logout();
+      }
+    });
   }
 }
