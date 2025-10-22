@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Fullstack TODO App - Angular 17 + Firebase Functions + Firestore",
-  "author": "Miguel Ortega",
+  "author": "Mikel Ortega",
   "license": "MIT",
   "engines": {
     "node": ">=20.0.0",
