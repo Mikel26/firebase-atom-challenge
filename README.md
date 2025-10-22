@@ -12,6 +12,12 @@
 
 App de gestión de tareas con arquitectura limpia, separación en capas, y buenas prácticas modernas. Implementa autenticación JWT, CRUD completo con ownership, validaciones espejo, y documentación OpenAPI completa.
 
+### 🌐 Demo en Vivo
+
+- **Aplicación Web**: https://atom-challenge-mikel.web.app
+- **API Backend**: https://us-central1-atom-challenge-mikel.cloudfunctions.net/api
+- **API Docs (Swagger)**: https://us-central1-atom-challenge-mikel.cloudfunctions.net/api/v1/api-docs/
+
 ## 🛠️ Stack Tecnológico
 
 ### Frontend
