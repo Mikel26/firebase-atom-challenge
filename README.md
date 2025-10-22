@@ -1,10 +1,16 @@
 # 🚀 Firebase Atom Challenge - Fullstack TODO App
 
-> Aplicación TODO fullstack con Angular 17 + Firebase Functions + Firestore
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Mikel26/firebase-atom-challenge)
+[![Tests](https://img.shields.io/badge/tests-63%20passing-success)](https://github.com/Mikel26/firebase-atom-challenge)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A570%25-success)](https://github.com/Mikel26/firebase-atom-challenge)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> Aplicación TODO fullstack profesional con Angular 17 + Firebase Functions + Firestore
 
 ## 📋 Descripción
 
-App de gestión de tareas con arquitectura limpia y buenas prácticas modernas. Implementa login por email, CRUD completo de tareas, y despliegue en Firebase.
+App de gestión de tareas con arquitectura limpia, separación en capas, y buenas prácticas modernas. Implementa autenticación JWT, CRUD completo con ownership, validaciones espejo, y documentación OpenAPI completa.
 
 ## 🛠️ Stack Tecnológico
 
@@ -123,6 +129,25 @@ pnpm -C apps/functions test
 pnpm test -- --coverage
 ```
 
+## 📸 Screenshots
+
+### Login
+
+![Login Screenshot](docs/screenshots/login.png)
+_Pantalla de login con validación de email y diálogo de crear usuario_
+
+### Tareas
+
+![Tasks Screenshot](docs/screenshots/tasks.png)
+_Gestión de tareas con CRUD completo, indicadores de estado y Material Design_
+
+### API Documentation
+
+![Swagger UI](docs/screenshots/swagger.png)
+_Documentación interactiva con Swagger/OpenAPI 3.0_
+
+> **Nota**: Los screenshots se generan durante el testing. Ver carpeta `/docs/screenshots/`
+
 ## 📦 Deploy
 
 ```bash
@@ -201,6 +226,79 @@ El archivo `apps/functions/openapi.yaml` contiene la especificación completa y 
 - `PATCH /v1/tasks/:id` - Actualizar tarea
 - `DELETE /v1/tasks/:id` - Eliminar tarea
 
+## 🏗️ Arquitectura del Sistema
+
+### Diagrama de Capas
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     FRONTEND (Angular 17)                    │
+├─────────────────────────────────────────────────────────────┤
+│  Features (Login, Tasks)                                     │
+│  ↓                                                           │
+│  Core Services (Auth, API Client)                            │
+│  ↓                                                           │
+│  HTTP Interceptor (JWT)                                      │
+└────────────────────┬────────────────────────────────────────┘
+                     │ HTTPS + JWT
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│              BACKEND (Firebase Cloud Functions)              │
+├─────────────────────────────────────────────────────────────┤
+│  Express App                                                 │
+│  ├── Controllers (HTTP) ← Orquestación                      │
+│  ├── Middleware (Auth)  ← Verificación JWT                  │
+│  ↓                                                           │
+│  Services (Business Logic)                                   │
+│  ├── Users Service      ← Login, create user                │
+│  ├── Tasks Service      ← CRUD + ownership                  │
+│  ↓                                                           │
+│  Repositories (Data Access - Interfaces)                     │
+│  ↓                                                           │
+│  Infrastructure (Firestore Implementation)                   │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    FIRESTORE (Database)                      │
+├─────────────────────────────────────────────────────────────┤
+│  Collections:                                                │
+│  ├── /users/{userId}                                         │
+│  └── /tasks/{taskId}  (con índice: userId + createdAt)     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Shared Types (Monorepo)
+
+```
+┌────────────────────────────────────┐
+│     packages/shared/               │
+├────────────────────────────────────┤
+│  Models: User, Task                │
+│  DTOs: Zod Schemas                 │
+└──────────┬─────────────────────────┘
+           │
+     ┌─────┴──────┐
+     │            │
+  Frontend    Backend
+```
+
+### Flujo de Datos
+
+```
+1. Usuario hace login:
+   Frontend → POST /v1/users/login → Backend
+   Backend → Verifica en Firestore → Genera JWT
+   JWT → Frontend (localStorage)
+
+2. Usuario crea tarea:
+   Frontend → POST /v1/tasks (con JWT) → Backend
+   Backend → Auth Middleware → Verifica JWT
+   Backend → Tasks Service → Valida ownership
+   Backend → Firestore → Guarda tarea
+   Firestore → Backend → Frontend (tarea creada)
+```
+
 ## 📚 Decisiones de Arquitectura (ADRs)
 
 ### ADR-001: JWT vs Firebase Auth
@@ -246,4 +344,4 @@ MIT License - ver [LICENSE](LICENSE) para más detalles.
 
 ---
 
-**Estado del Proyecto**: ✅ PR0 - Bootstrap completado | 🚀 Listo para PR1
+**Estado del Proyecto**: ✅ COMPLETADO - Producción Ready | 🎯 Challenge Finalizado

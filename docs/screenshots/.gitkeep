@@ -1,0 +1,19 @@
+# Screenshots Directory
+
+Esta carpeta debe contener los screenshots de la aplicación:
+
+- `login.png` - Pantalla de login
+- `tasks.png` - Pantalla de tareas
+- `swagger.png` - Swagger UI
+- `create-user-dialog.png` - Diálogo de crear usuario (opcional)
+- `edit-task-dialog.png` - Diálogo de editar tarea (opcional)
+- `confirm-delete.png` - Confirmación de eliminar (opcional)
+
+Los screenshots se pueden generar manualmente o con herramientas como:
+- Chrome DevTools (Screenshot capture)
+- Firefox Developer Tools
+- Herramientas de testing E2E (Playwright, Cypress)
+
+**Tamaño recomendado**: 1200x800px o resolución actual del navegador
+**Formato**: PNG con compresión
+
