@@ -13,8 +13,13 @@ if (!admin.apps.length) {
 
 /**
  * Instancia de Firestore
+ * Conecta a la base de datos 'db-testing'
  */
+const firestoreSettings = {
+  databaseId: 'db-testing',
+};
 export const db = admin.firestore();
+db.settings(firestoreSettings);
 
 /**
  * Referencia a la colección de usuarios
