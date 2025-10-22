@@ -338,6 +338,71 @@ Scopes: web, functions, shared, ci, repo, deps
 
 MIT License - ver [LICENSE](LICENSE) para más detalles.
 
+## 🔮 Roadmap de Mejoras Futuras
+
+El proyecto cumple 100% los requisitos del challenge. Las siguientes mejoras son opcionales para convertirlo en una aplicación enterprise-grade:
+
+### Hardening (Seguridad Avanzada)
+
+- [ ] **Rate Limiting**: Prevenir DoS con límites por IP/usuario (express-rate-limit)
+- [ ] **Input Sanitization**: XSS protection en todos los inputs (validator.js)
+- [ ] **Secrets Rotation**: Rotación automática de JWT_SECRET con Firebase Secret Manager
+- [ ] **OWASP Headers**: Content-Security-Policy, Permissions-Policy
+- [ ] **Request Validation**: Esquemas más estrictos con límites de tamaño
+- [ ] **SQL Injection Protection**: Aunque usamos Firestore, validar queries dinámicos
+
+### Observabilidad (Logging & Monitoring)
+
+- [ ] **Structured Logging**: Winston/Pino para logs JSON estructurados
+- [ ] **Error Tracking**: Integración con Sentry o LogRocket
+- [ ] **APM**: Application Performance Monitoring con Firebase Performance
+- [ ] **Distributed Tracing**: Correlation IDs para seguir requests
+- [ ] **Metrics Dashboard**: Grafana + Prometheus para métricas en tiempo real
+- [ ] **Audit Logs**: Registro de todas las acciones de usuarios
+- [ ] **Alerting**: Notificaciones automáticas por errores críticos
+
+### Features UX
+
+- [ ] **Filtros**: Filtrar tareas por estado (completadas/pendientes)
+- [ ] **Búsqueda**: Buscar tareas por título/descripción
+- [ ] **Categorías**: Tags/labels para organizar tareas
+- [ ] **Prioridades**: Alta/Media/Baja con colores
+- [ ] **Fechas de vencimiento**: Due dates con recordatorios
+- [ ] **Dark Mode**: Tema oscuro con toggle
+- [ ] **Internacionalización**: i18n para múltiples idiomas
+- [ ] **Drag & Drop**: Reordenar tareas manualmente
+
+### Performance
+
+- [ ] **Paginación**: Lazy loading de tareas (offset/cursor)
+- [ ] **Debouncing**: En búsqueda y auto-save
+- [ ] **Virtual Scrolling**: Para listas largas (CDK Virtual Scroll)
+- [ ] **Image Optimization**: Compresión automática de assets
+- [ ] **Code Splitting**: Chunks más granulares
+
+### Testing
+
+- [ ] **E2E Tests**: Playwright o Cypress para flujos completos
+- [ ] **Visual Regression**: Percy o Chromatic para UI
+- [ ] **Load Testing**: k6 o Artillery para API
+- [ ] **Coverage 90%+**: Incrementar cobertura
+- [ ] **Mutation Testing**: Stryker para calidad de tests
+
+### DevOps
+
+- [ ] **Docker**: Containerización completa
+- [ ] **Kubernetes**: Orquestación (si se migra de Firebase)
+- [ ] **Blue-Green Deploy**: Zero-downtime deployments
+- [ ] **Feature Flags**: LaunchDarkly o Firebase Remote Config
+- [ ] **Automated Rollback**: Revert automático si falla health check
+
+### Accesibilidad
+
+- [ ] **WCAG 2.1 AA**: Cumplimiento completo
+- [ ] **Screen Reader**: Optimización para lectores de pantalla
+- [ ] **Keyboard Navigation**: 100% navegable por teclado
+- [ ] **ARIA Labels**: Mejoras en etiquetas semánticas
+
 ## 👤 Autor
 
 **Mikel Ortega** - [@Mikel26](https://github.com/Mikel26)
