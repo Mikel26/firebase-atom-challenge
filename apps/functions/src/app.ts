@@ -6,9 +6,11 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import * as usersController from './api/users.controller';
 import * as tasksController from './api/tasks.controller';
 import { authMiddleware } from './middleware/auth';
+import { swaggerSpec } from './docs/openapi';
 
 // Inicializar app
 const app = express();
@@ -31,7 +33,39 @@ app.use(
 // Parse JSON
 app.use(express.json());
 
-// Health check endpoint
+// API Documentation (Swagger UI) - Public
+app.use('/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * @openapi
+ * /health:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: Health check
+ *     description: Verifica que la API esté funcionando correctamente
+ *     responses:
+ *       200:
+ *         description: API funcionando correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 message:
+ *                   type: string
+ *                   example: TODO API is running
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2025-10-21T18:30:00.000Z
+ *                 version:
+ *                   type: string
+ *                   example: 1.0.0
+ */
 app.get('/v1/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',

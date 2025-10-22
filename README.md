@@ -9,6 +9,7 @@ App de gestión de tareas con arquitectura limpia y buenas prácticas modernas. 
 ## 🛠️ Stack Tecnológico
 
 ### Frontend
+
 - **Angular 17** (standalone components)
 - **TypeScript** (strict mode)
 - **Angular Material** (UI components)
@@ -16,6 +17,7 @@ App de gestión de tareas con arquitectura limpia y buenas prácticas modernas. 
 - **SCSS** (estilos modulares)
 
 ### Backend
+
 - **Firebase Cloud Functions v2**
 - **Express.js**
 - **TypeScript**
@@ -23,6 +25,7 @@ App de gestión de tareas con arquitectura limpia y buenas prácticas modernas. 
 - **Firestore** (base de datos)
 
 ### Tooling
+
 - **PNPM** (gestor de paquetes)
 - **ESLint + Prettier** (code quality)
 - **Husky + lint-staged** (git hooks)
@@ -155,18 +158,64 @@ firebase deploy --only functions
 - Environment variables para secretos
 - Validaciones espejo front/back
 
+## 📖 Documentación de API
+
+La API está documentada con **OpenAPI 3.0** (Swagger):
+
+### Swagger UI Interactivo
+
+Cuando los emulators estén corriendo, accede a:
+
+```
+http://localhost:5001/demo-atom-challenge/us-central1/api/v1/api-docs
+```
+
+Desde aquí puedes:
+
+- ✅ Ver todos los endpoints disponibles
+- ✅ Probar cada endpoint directamente desde el navegador
+- ✅ Ver schemas de request/response
+- ✅ Entender códigos de error y respuestas
+
+### Archivo OpenAPI Spec
+
+El archivo `apps/functions/openapi.yaml` contiene la especificación completa y puede importarse en:
+
+- Postman
+- Insomnia
+- VS Code REST Client
+- Generadores de código
+
+### Endpoints Disponibles
+
+**Públicos:**
+
+- `GET /v1/health` - Health check
+- `POST /v1/users/login` - Login
+- `POST /v1/users` - Crear usuario
+
+**Protegidos (requieren JWT):**
+
+- `GET /v1/tasks` - Listar tareas
+- `POST /v1/tasks` - Crear tarea
+- `PATCH /v1/tasks/:id` - Actualizar tarea
+- `DELETE /v1/tasks/:id` - Eliminar tarea
+
 ## 📚 Decisiones de Arquitectura (ADRs)
 
 ### ADR-001: JWT vs Firebase Auth
+
 **Decisión**: Implementar JWT propio para login por email simple.  
 **Razón**: Cumple requerimientos sin overhead de Firebase Auth en esta fase.  
 **Trade-off**: En producción se recomienda migrar a Firebase Auth para features avanzadas.
 
 ### ADR-002: Monorepo con PNPM workspaces
+
 **Decisión**: Monorepo con `apps/` y `packages/`.  
 **Razón**: Compartir tipos entre front/back, scripts unificados, mejor DX.
 
 ### ADR-003: Repository Pattern
+
 **Decisión**: Abstraer Firestore con patrón Repository.  
 **Razón**: Testabilidad (mocks), separación de concerns, cambiar BD sin tocar lógica.
 
@@ -198,4 +247,3 @@ MIT License - ver [LICENSE](LICENSE) para más detalles.
 ---
 
 **Estado del Proyecto**: ✅ PR0 - Bootstrap completado | 🚀 Listo para PR1
-
