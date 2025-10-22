@@ -242,7 +242,7 @@ MIT License - ver [LICENSE](LICENSE) para más detalles.
 
 ## 👤 Autor
 
-**Miguel Ortega** - [@Mikel26](https://github.com/Mikel26)
+**Mikel Ortega** - [@Mikel26](https://github.com/Mikel26)
 
 ---
 

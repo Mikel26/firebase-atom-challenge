@@ -14,7 +14,7 @@ const options: swaggerJsdoc.Options = {
         'API REST para aplicación TODO con autenticación JWT y gestión de tareas por usuario',
       contact: {
         name: 'Mikel Ortega',
-        email: 'mikel@example.com',
+        email: 'mikel.ortega26@gmail.com',
       },
       license: {
         name: 'MIT',
