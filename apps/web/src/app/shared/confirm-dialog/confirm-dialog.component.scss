@@ -1,0 +1,20 @@
+.dialog-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+  color: #f44336;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+}
+
+mat-dialog-content {
+  padding: 20px 0;
+  min-width: 300px;
+}
+
+p {
+  margin: 0;
+  line-height: 1.5;
+}

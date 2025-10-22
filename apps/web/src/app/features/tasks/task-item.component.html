@@ -1,0 +1,32 @@
+<mat-card [class.completed]="task().completed">
+  <mat-card-content class="task-content">
+    <mat-checkbox
+      [checked]="task().completed"
+      (change)="toggle.emit(task())"
+      color="primary"
+      class="task-checkbox"
+    >
+      <div class="task-info">
+        <h3 class="task-title">{{ task().title }}</h3>
+        @if (task().description) {
+          <p class="task-description">{{ task().description }}</p>
+        }
+        <span class="task-date">{{ task().createdAt | date: 'short' }}</span>
+      </div>
+    </mat-checkbox>
+
+    <div class="task-actions">
+      <button mat-icon-button (click)="edit.emit(task())" aria-label="Editar tarea" color="primary">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="delete.emit(task())"
+        aria-label="Eliminar tarea"
+        color="warn"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

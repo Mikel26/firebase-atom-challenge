@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://atom-challenge-mikel.web.app/api',
+  apiUrl: 'https://us-central1-atom-challenge-mikel.cloudfunctions.net/api',
 };
-
