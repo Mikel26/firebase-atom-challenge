@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "demo-atom-challenge"
+    "default": "atom-challenge-mikel",
+    "development": "demo-atom-challenge"
   }
 }
 
