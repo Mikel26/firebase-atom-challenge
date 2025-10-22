@@ -6,7 +6,9 @@ import * as admin from 'firebase-admin';
 
 // Inicializar Firebase Admin
 if (!admin.apps.length) {
-  admin.initializeApp();
+  admin.initializeApp({
+    projectId: process.env.GCLOUD_PROJECT || 'atom-challenge-mikel',
+  });
 }
 
 /**

@@ -21,7 +21,12 @@ app.use(helmet());
 // CORS - permitir orígenes específicos
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:4200', 'http://localhost:5002'];
+  : [
+      'http://localhost:4200',
+      'http://localhost:5002',
+      'https://atom-challenge-mikel.web.app',
+      'https://atom-challenge-mikel.firebaseapp.com',
+    ];
 
 app.use(
   cors({
