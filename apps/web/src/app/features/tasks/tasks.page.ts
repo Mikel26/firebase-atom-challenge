@@ -3,7 +3,7 @@
  * Página principal de gestión de tareas
  */
 
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BehaviorSubject, catchError, finalize, Observable, of, tap } from 'rxjs';
 import { Task } from '@atom-challenge/shared';
 import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
@@ -49,9 +50,15 @@ export class TasksPageComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
-  readonly loading = signal(false);
-  readonly creating = signal(false);
-  readonly tasks = signal<Task[]>([]);
+  // Observables para usar con async pipe
+  private readonly tasksSubject = new BehaviorSubject<Task[]>([]);
+  readonly tasks$: Observable<Task[]> = this.tasksSubject.asObservable();
+
+  private readonly loadingSubject = new BehaviorSubject<boolean>(false);
+  readonly loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private readonly creatingSubject = new BehaviorSubject<boolean>(false);
+  readonly creating$: Observable<boolean> = this.creatingSubject.asObservable();
 
   readonly newTaskForm = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
@@ -62,21 +69,29 @@ export class TasksPageComponent implements OnInit {
     this.loadTasks();
   }
 
-  loadTasks(): void {
-    this.loading.set(true);
+  /**
+   * trackBy function para optimizar renderizado de lista
+   */
+  trackByTaskId(_index: number, task: Task): string {
+    return task.id;
+  }
 
-    this.apiClient.listTasks().subscribe({
-      next: (tasks) => {
-        this.tasks.set(tasks);
-        this.loading.set(false);
-      },
-      error: (error) => {
-        this.loading.set(false);
-        this.snackBar.open(error.error?.message || 'Error al cargar tareas', 'Cerrar', {
-          duration: 5000,
-        });
-      },
-    });
+  private loadTasks(): void {
+    this.loadingSubject.next(true);
+
+    this.apiClient
+      .listTasks()
+      .pipe(
+        tap((tasks) => this.tasksSubject.next(tasks)),
+        catchError((error) => {
+          this.snackBar.open(error.error?.message || 'Error al cargar tareas', 'Cerrar', {
+            duration: 5000,
+          });
+          return of([]);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
   }
 
   onCreateTask(): void {
@@ -84,42 +99,51 @@ export class TasksPageComponent implements OnInit {
       return;
     }
 
-    this.creating.set(true);
+    this.creatingSubject.next(true);
     const { title, description } = this.newTaskForm.value;
 
-    this.apiClient.createTask({ title: title!, description: description || undefined }).subscribe({
-      next: (task) => {
-        // Optimistic UI: agregar al inicio
-        this.tasks.update((tasks) => [task, ...tasks]);
-        this.newTaskForm.reset();
-        this.creating.set(false);
-        this.snackBar.open('Tarea creada', 'Cerrar', { duration: 2000 });
-      },
-      error: (error) => {
-        this.creating.set(false);
-        this.snackBar.open(error.error?.message || 'Error al crear tarea', 'Cerrar', {
-          duration: 5000,
-        });
-      },
-    });
+    this.apiClient
+      .createTask({ title: title!, description: description || undefined })
+      .pipe(
+        tap((task) => {
+          // Optimistic UI: agregar al inicio
+          const currentTasks = this.tasksSubject.value;
+          this.tasksSubject.next([task, ...currentTasks]);
+          this.newTaskForm.reset();
+          this.snackBar.open('Tarea creada', 'Cerrar', { duration: 2000 });
+        }),
+        catchError((error) => {
+          this.snackBar.open(error.error?.message || 'Error al crear tarea', 'Cerrar', {
+            duration: 5000,
+          });
+          return of(null);
+        }),
+        finalize(() => this.creatingSubject.next(false))
+      )
+      .subscribe();
   }
 
   onToggleComplete(task: Task): void {
-    this.apiClient.updateTask(task.id, { completed: !task.completed }).subscribe({
-      next: (updated) => {
-        this.tasks.update((tasks) => tasks.map((t) => (t.id === updated.id ? updated : t)));
-        this.snackBar.open(
-          updated.completed ? 'Tarea completada' : 'Tarea marcada como pendiente',
-          'Cerrar',
-          { duration: 2000 }
-        );
-      },
-      error: (error) => {
-        this.snackBar.open(error.error?.message || 'Error al actualizar tarea', 'Cerrar', {
-          duration: 5000,
-        });
-      },
-    });
+    this.apiClient
+      .updateTask(task.id, { completed: !task.completed })
+      .pipe(
+        tap((updated) => {
+          const currentTasks = this.tasksSubject.value;
+          this.tasksSubject.next(currentTasks.map((t) => (t.id === updated.id ? updated : t)));
+          this.snackBar.open(
+            updated.completed ? 'Tarea completada' : 'Tarea marcada como pendiente',
+            'Cerrar',
+            { duration: 2000 }
+          );
+        }),
+        catchError((error) => {
+          this.snackBar.open(error.error?.message || 'Error al actualizar tarea', 'Cerrar', {
+            duration: 5000,
+          });
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   onEditTask(task: Task): void {
@@ -130,17 +154,22 @@ export class TasksPageComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.apiClient.updateTask(task.id, result).subscribe({
-          next: (updated) => {
-            this.tasks.update((tasks) => tasks.map((t) => (t.id === updated.id ? updated : t)));
-            this.snackBar.open('Tarea actualizada', 'Cerrar', { duration: 2000 });
-          },
-          error: (error) => {
-            this.snackBar.open(error.error?.message || 'Error al actualizar tarea', 'Cerrar', {
-              duration: 5000,
-            });
-          },
-        });
+        this.apiClient
+          .updateTask(task.id, result)
+          .pipe(
+            tap((updated) => {
+              const currentTasks = this.tasksSubject.value;
+              this.tasksSubject.next(currentTasks.map((t) => (t.id === updated.id ? updated : t)));
+              this.snackBar.open('Tarea actualizada', 'Cerrar', { duration: 2000 });
+            }),
+            catchError((error) => {
+              this.snackBar.open(error.error?.message || 'Error al actualizar tarea', 'Cerrar', {
+                duration: 5000,
+              });
+              return of(null);
+            })
+          )
+          .subscribe();
       }
     });
   }
@@ -167,17 +196,22 @@ export class TasksPageComponent implements OnInit {
   }
 
   private deleteTaskConfirmed(task: Task): void {
-    this.apiClient.deleteTask(task.id).subscribe({
-      next: () => {
-        this.tasks.update((tasks) => tasks.filter((t) => t.id !== task.id));
-        this.snackBar.open('Tarea eliminada', 'Cerrar', { duration: 2000 });
-      },
-      error: (error) => {
-        this.snackBar.open(error.error?.message || 'Error al eliminar tarea', 'Cerrar', {
-          duration: 5000,
-        });
-      },
-    });
+    this.apiClient
+      .deleteTask(task.id)
+      .pipe(
+        tap(() => {
+          const currentTasks = this.tasksSubject.value;
+          this.tasksSubject.next(currentTasks.filter((t) => t.id !== task.id));
+          this.snackBar.open('Tarea eliminada', 'Cerrar', { duration: 2000 });
+        }),
+        catchError((error) => {
+          this.snackBar.open(error.error?.message || 'Error al eliminar tarea', 'Cerrar', {
+            duration: 5000,
+          });
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   onLogout(): void {

@@ -19,17 +19,15 @@
               matInput
               formControlName="title"
               placeholder="¿Qué necesitas hacer?"
-              [disabled]="creating()"
+              [disabled]="!!(creating$ | async)"
             />
             @if (newTaskForm.get('title')?.hasError('required') &&
             newTaskForm.get('title')?.touched) {
-              <mat-error>El título es requerido</mat-error>
-            }
-            @if (newTaskForm.get('title')?.hasError('minlength')) {
-              <mat-error>Mínimo 3 caracteres</mat-error>
-            }
-            @if (newTaskForm.get('title')?.hasError('maxlength')) {
-              <mat-error>Máximo 80 caracteres</mat-error>
+            <mat-error>El título es requerido</mat-error>
+            } @if (newTaskForm.get('title')?.hasError('minlength')) {
+            <mat-error>Mínimo 3 caracteres</mat-error>
+            } @if (newTaskForm.get('title')?.hasError('maxlength')) {
+            <mat-error>Máximo 80 caracteres</mat-error>
             }
           </mat-form-field>
 
@@ -39,10 +37,10 @@
               matInput
               formControlName="description"
               placeholder="Detalles..."
-              [disabled]="creating()"
+              [disabled]="!!(creating$ | async)"
             />
             @if (newTaskForm.get('description')?.hasError('maxlength')) {
-              <mat-error>Máximo 200 caracteres</mat-error>
+            <mat-error>Máximo 200 caracteres</mat-error>
             }
           </mat-form-field>
 
@@ -50,15 +48,14 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="newTaskForm.invalid || creating()"
+            [disabled]="newTaskForm.invalid || !!(creating$ | async)"
             class="add-button"
           >
-            @if (creating()) {
-              <mat-spinner diameter="20"></mat-spinner>
+            @if (creating$ | async) {
+            <mat-spinner diameter="20"></mat-spinner>
             } @else {
-              <mat-icon>add</mat-icon>
-              Agregar
-            }
+            <mat-icon>add</mat-icon>
+            Agregar }
           </button>
         </div>
       </form>
@@ -66,30 +63,29 @@
   </mat-card>
 
   <!-- Loading inicial -->
-  @if (loading()) {
-    <div class="loading-container">
-      <mat-spinner></mat-spinner>
-      <p>Cargando tareas...</p>
-    </div>
-  } @else if (tasks().length === 0) {
-    <!-- Estado vacío -->
-    <div class="empty-state">
-      <mat-icon class="empty-icon">check_circle_outline</mat-icon>
-      <h2>No hay tareas</h2>
-      <p>¡Agrega tu primera tarea usando el formulario de arriba!</p>
-    </div>
+  @if (loading$ | async) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Cargando tareas...</p>
+  </div>
+  } @else if ((tasks$ | async)?.length === 0) {
+  <!-- Estado vacío -->
+  <div class="empty-state">
+    <mat-icon class="empty-icon">check_circle_outline</mat-icon>
+    <h2>No hay tareas</h2>
+    <p>¡Agrega tu primera tarea usando el formulario de arriba!</p>
+  </div>
   } @else {
-    <!-- Lista de tareas -->
-    <div class="tasks-list">
-      @for (task of tasks(); track task.id) {
-        <app-task-item
-          [task]="task"
-          (toggle)="onToggleComplete($event)"
-          (edit)="onEditTask($event)"
-          (delete)="onDeleteTask($event)"
-        ></app-task-item>
-      }
-    </div>
+  <!-- Lista de tareas -->
+  <div class="tasks-list">
+    @for (task of tasks$ | async; track trackByTaskId($index, task)) {
+    <app-task-item
+      [task]="task"
+      (toggle)="onToggleComplete($event)"
+      (edit)="onEditTask($event)"
+      (delete)="onDeleteTask($event)"
+    ></app-task-item>
+    }
+  </div>
   }
 </div>
-
